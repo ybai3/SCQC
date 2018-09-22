@@ -1,0 +1,25 @@
+Package: SCQC
+Type: Package
+Title: Single Cell Sequencing Data Quality Control
+Version: 0.1.0
+Author: Yaozhong Liu, Yulong Bai
+Maintainer: Yulong Bai <ybai3@tulane.edu>
+Description: 
+    Single Cell RNA-Sequencing (SC RNA-Seq) produces transcriptome profile at single cell level. However, the count matrix often comes with a high proportion of technical noise. Here we proposed a data cleaning pipeline for SC RNA-seq data, where we first screen genes (gene-wise screening) followed by screening cell libraries (library-wise screening).
+    In order to use functions in the package properly, please follow these steps:
+    0. Library MASS package. Load two example datasets ("ensebl_id", "snu") into your work space using data() function. 
+    1. Manipulate your original count dataset to a matrix with each row represents a gene and each column represents a single cell.
+    For example:
+          cell1 cell2 cell3...
+    gene1 0     0     1
+    gene2 0     0     0
+    gene3 1     0     2
+    ... 
+    2. Use pretreat() function to clean your data. This function will distinguish housekeeping and non-housekeeping genes in your dataset according to Human housekeeping genes, revisited by Eisenberg E, Levanon. Also, this function will remove genes with all 0 counts. You will get a list containing two countmatrices. One for housekeeping and the other for non-housekeeping.
+    3. Input two matrices you got in previous step into genewise() function for gene-wise screening. It will return you a list containing the beta values of negative binomial regression, beta values controlled by FDR, False discovery rate for each gene, and genewise cleaned countmatrix.
+    4. Input the genewise cleaned count matrix into libwise() function for library-wise screening. Libwise() function is based on large times of repeated unit procedure following by a wilcoxon test. Each repeated procedure includes random sampling pairs of libraries, calculation of Spearman correlation coefficient between pairs. The unit procedure can be found in corcoef() function. genewise() function will return a list containing the correlation coefficients calculated from HK and NHK groups, and Wilcoxon test's p-value.
+    5. plotbeta() function can help make distribution plot of HK and NHK beta values you got from genewise() function. It will show the performance on negative binomial regression of each group. 
+    6. corcoefplot() function helps to make an illustrating plot for the library wise screening. It will show how consistency between bio-replicates in HK group and NHK group genes different from each other.
+    7. suggest_cutoff() function suggests cotoff point of library size(column sum) for library-wise screening. The suggestion is based on empirical pattern of P-values of Wilcoxon test across 21 bins in library-wise screening step. It is recommended to look at the boxplot of 21 bins for double check.
+Encoding: UTF-8
+LazyData: true
